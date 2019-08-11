@@ -1,9 +1,6 @@
 import React, {Component} from 'react';
-//import logo from './logo.svg';
-//import './App.css';
-
-
 import axios from 'axios';
+import Loading from './Loading';
 
 
 class App extends Component{
@@ -11,24 +8,54 @@ class App extends Component{
     super(props)
     //srate
     this.state={
-      users:[]
-    }
+      users:[],
+      loading:false
+    };
+    //any time create function BIND it
+    this.handleSubmit=this.handleSubmit.bind(this);
+
   }
 
-  componentWillMount(){
-    axios('https://api.randomuser.me/')
+  getUsers(){
+    this.setState({
+      loading:true
+    })
+    axios('https://api.randomuser.me/?results=5')
     .then(response => this.setState({
-      users: response.data.results
+      users: [...this.state.users, ...response.data.results],
+      loading :false
     })
     );
   }
+
+  handleSubmit(e){
+    e.preventDefault();
+    this.getUsers();
+    console.log('More users loaded');
+  }
+
+  componentWillMount(){
+    this.getUsers();
+  }
+
+
+
   render(){
+    const {loading, users}=this.state;
     return(
       <div className="App">
-        {this.state.users.map(user =>
-           <div>
-           {user.cell}
-           </div>)}  
+        <form onSubmit={this.handleSubmit}>
+              <input type="submit" value="load new users" />
+        </form>
+        <hr />
+        {!loading
+         ? users.map(user =>(
+           <div key={user.id.value}>
+            <h3 style={{color:'red'}}>{user.name.first}</h3>
+            <p>{user.email}</p>
+            <hr />
+           </div>))
+        : <Loading message="Hey hi Lets do it" />}  
       </div>
     );
   }
