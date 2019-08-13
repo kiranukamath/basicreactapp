@@ -53,6 +53,7 @@ class App extends Component{
            <div key={user.id.value}>
             <h3 style={{color:'red'}}>{user.name.first}</h3>
             <p>{user.email}</p>
+            <p>...</p>
             <hr />
            </div>))
         : <Loading message="Hey hi Lets do it" />}  
